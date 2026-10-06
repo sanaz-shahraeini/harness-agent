@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>جزوه جامع آموزش ساخت Agentic Harness در پایتون</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Vazirmatn', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'Courier New', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Vazirmatn Font CDN -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+    pre, code {
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      direction: ltr;
+      text-align: left;
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+    .code-preview {
+      counter-reset: line;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.625rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+          <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold tracking-tight bg-gradient-to-l from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+            دوره تخصصی Agentic Harness
+          </h1>
+          <p class="text-xs text-slate-400 hidden sm:block">راهنمای جامع پیاده‌سازی سیستم‌های عاملی در پایتون خالص</p>
+        </div>
+      </div>
+
+      <nav class="flex items-center gap-2 sm:gap-4">
+        <a href="#architecture" class="text-xs sm:text-sm font-medium text-slate-300 hover:text-indigo-400 transition-colors py-1 px-2">معماری</a>
+        <a href="#roadmap" class="text-xs sm:text-sm font-medium text-slate-300 hover:text-indigo-400 transition-colors py-1 px-2">مراحل توسعه</a>
+        <a href="#code-repository" class="text-xs sm:text-sm font-medium text-slate-300 hover:text-indigo-400 transition-colors py-1 px-2">مخزن کدها</a>
+        <a href="#comparison" class="text-xs sm:text-sm font-medium text-slate-300 hover:text-indigo-400 transition-colors py-1 px-2 hidden md:inline-block">مقایسه نسخه‌ها</a>
+        <button id="toggle-toc" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 transition-colors border border-slate-700/60" title="فهرست محتوا">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+          </svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+    <!-- Hero Banner -->
+    <section class="relative overflow-hidden rounded-3xl bg-gradient-to-b from-indigo-950/40 via-slate-900/60 to-slate-900 border border-indigo-500/20 p-6 sm:p-10 mb-12 shadow-2xl">
+      <div class="absolute -top-24 -left-24 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 -right-24 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      
+      <div class="relative z-10 max-w-3xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-semibold mb-4">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          پایتون خالص • بدون فریم‌ورک‌های واسط • سازگار با Ollama و OpenRouter
+        </div>
+        <h2 class="text-2xl sm:text-4xl font-extrabold text-white leading-tight mb-4">
+          کالبدشکافی و ساخت <span class="bg-gradient-to-r from-indigo-400 via-cyan-400 to-teal-300 bg-clip-text text-transparent">Agentic Harness</span> از پایه تا تولید
+        </h2>
+        <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+          چرا بیشتر سیستم‌های مبتنی بر ایجنت شکست می‌خورند؟ مدل زبانی صرفاً یک موتور استدلال بدون دست و پاست. این جزوه به شما آموزش می‌دهد چگونه حلقه اجرایی، پروتکل ارتباطی MCP، فراخوانی توابع و حافظه پایدار را شخصاً در پایتون بسازید.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a href="#step-0" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm transition-all shadow-lg shadow-indigo-600/30">
+            <span>شروع گام‌به‌گام</span>
+            <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
+          </a>
+          <a href="#quick-formula" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-sm transition-all border border-slate-700">
+            معادله اصلی سیستم‌های ایجنتی
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architectural Section -->
+    <section id="architecture" class="mb-16">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-2.5 h-8 bg-indigo-500 rounded-full"></div>
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">۱. تفاوت مدل زبانی (LLM) با هارنس عاملی (Harness)</h2>
+          <p class="text-xs sm:text-sm text-slate-400">شناخت هسته محاسباتی در برابر محیط اجرایی</p>
+        </div>
+      </div>
+
+      <div id="quick-formula" class="p-6 rounded-2xl bg-slate-900 border border-slate-800 mb-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="space-y-2 text-center md:text-right">
+          <span class="text-xs font-bold uppercase tracking-wider text-indigo-400">قاعده بنیادین معماری</span>
+          <div class="text-lg sm:text-2xl font-mono font-bold text-emerald-400 tracking-wide dir-ltr">
+            Agent = Model (Brain) + Harness (Body & Environment)
+          </div>
+          <p class="text-xs sm:text-sm text-slate-400">
+            مدل‌های زبانی بدون وضعیت (Stateless) هستند و خودشان نمی‌توانند فایلی بخوانند یا فرمانی صادر کنند. هارنس نقش حواس، بازوها و چرخه تصمیم‌گیری را ایفا می‌کند.
+          </p>
+        </div>
+        <div class="w-full md:w-auto shrink-0 flex gap-3">
+          <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-center flex-1 md:w-32">
+            <span class="text-xs text-slate-400">مغز سیستم</span>
+            <div class="font-bold text-indigo-300 mt-1">LLM / Brain</div>
+            <span class="text-[10px] text-slate-500 block mt-1">پیش‌بینی متن و Intent</span>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-center flex-1 md:w-32">
+            <span class="text-xs text-slate-400">پیکره و ابزار</span>
+            <div class="font-bold text-cyan-300 mt-1">Harness</div>
+            <span class="text-[10px] text-slate-500 block mt-1">اجرا، اعتبارسنجی و فیدبک</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6-Layer Harness Architecture Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-indigo-500/40 transition-all">
+          <div class="w-9 h-9 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold mb-3">۱</div>
+          <h3 class="font-bold text-slate-100 text-sm mb-1.5">محیط ایزوله (Execution Sandbox)</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            اجرای دستورات، خواندن و نوشتن فایل‌ها در فضای کنترل‌شده مانند دایرکتوری اختصاصی یا کانتینرهای مجزا تا به سیستم اصلی صدمه‌ای نرسد.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-indigo-500/40 transition-all">
+          <div class="w-9 h-9 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold mb-3">۲</div>
+          <h3 class="font-bold text-slate-100 text-sm mb-1.5">پروتکل ابزارها (MCP & Tooling)</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            اتصال بدون وابستگی به سرورهای استاندارد پروتکل کانتکست مدل (MCP) برای استفاده نامحدود از ابزارهای خارجی مانند مرورگر، تقویم و ترمینال.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-indigo-500/40 transition-all">
+          <div class="w-9 h-9 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold mb-3">۳</div>
+          <h3 class="font-bold text-slate-100 text-sm mb-1.5">حلقه بازخورد (Agentic Loop)</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            اجرای چرخه مداوم در قالب <code class="text-amber-400">while True</code> تا مدل بتواند نتایج اجرای گام‌های پیشین را دیده و تسک‌های چندمرحله‌ای را خودکار اصلاح و تکمیل کند.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-indigo-500/40 transition-all">
+          <div class="w-9 h-9 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold mb-3">۴</div>
+          <h3 class="font-bold text-slate-100 text-sm mb-1.5">حافظه پایدار (Persistent Memory)</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            ذخیره فکت‌ها و ترجیحات در فایل‌های دیسک مانند <code class="text-amber-400">memory.md</code> و تزریق خودکار آن به پرامپت سیستمی در هر نشست جدید.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-indigo-500/40 transition-all">
+          <div class="w-9 h-9 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold mb-3">۵</div>
+          <h3 class="font-bold text-slate-100 text-sm mb-1.5">مسیریابی مدل‌ها (Model Routing)</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            امکان تعویض داینامیک مدل در زمان اجرا از مدل‌های سریع و رایگان محلی (مانند Qwen با Ollama) به مدل‌های بزرگ استدلالی (Claude یا GPT).
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-indigo-500/40 transition-all">
+          <div class="w-9 h-9 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold mb-3">۶</div>
+          <h3 class="font-bold text-slate-100 text-sm mb-1.5">گاردریل‌ها و ایمنی (Guardrails)</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            اعمال محدودیت روی تعداد تکرارهای حلقه (Max Iterations) برای جلوگیری از هزینه‌های ناخواسته و لوپ‌های بی‌پایان.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Setup and Tools -->
+    <section class="mb-16">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-2.5 h-8 bg-cyan-500 rounded-full"></div>
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">۲. راه‌اندازی سریع محیط پروژه با uv</h2>
+          <p class="text-xs sm:text-sm text-slate-400">مدیریت پکیج‌های پایتون با بالاترین سرعت</p>
+        </div>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+        <p class="text-sm text-slate-300">
+          برای دوری از پکیج‌های حجیم و کند، از ابزار نوین <strong>uv</strong> برای ساخت محیط مجازی استفاده می‌کنیم. کل این پروژه تنها به ۳ پکیج استاندارد نیاز دارد:
+        </p>
+
+        <div class="relative group bg-slate-950 rounded-xl border border-slate-800 p-4 font-mono text-sm text-emerald-400 flex items-center justify-between">
+          <span class="overflow-x-auto whitespace-nowrap">
+            # راه‌اندازی پروژه و نصب وابستگی‌ها<br>
+            uv init agent-harness && cd agent-harness<br>
+            uv add openai mcp pydantic
+          </span>
+          <button onclick="copyToClipboard('uv init agent-harness && cd agent-harness\nuv add openai mcp pydantic', this)" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition-colors shrink-0 mr-4">
+            کپی دستور
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          <div class="p-4 rounded-xl bg-slate-950/60 border border-slate-800">
+            <h4 class="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-2">اجرای محلی با Ollama (رایگان)</h4>
+            <div class="bg-slate-900 p-2.5 rounded-lg text-xs font-mono text-slate-300 mb-2">
+              ollama pull qwen2.5:3b
+            </div>
+            <p class="text-[11px] text-slate-400">کافیست Ollama روی سیستم شما در حال اجرا باشد؛ پورت ۱۱۴۳۴ به صورت خودکار به عنوان سرور لوکال عمل می‌کند.</p>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-950/60 border border-slate-800">
+            <h4 class="text-xs font-bold text-cyan-400 uppercase tracking-wider mb-2">اجرای ابری با OpenRouter</h4>
+            <div class="bg-slate-900 p-2.5 rounded-lg text-xs font-mono text-slate-300 mb-2">
+              base_url="https://openrouter.ai/api/v1"
+            </div>
+            <p class="text-[11px] text-slate-400">اتصال به صدها مدل متنوع (مانند Claude 3.5 Sonnet یا Llama 3) تنها با ارسال کلید API بدون تغییر منطق کد.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Detailed Steps Roadmap -->
+    <section id="roadmap" class="mb-16">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-2.5 h-8 bg-emerald-500 rounded-full"></div>
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">۳. سیر تکامل هارنس: گام‌به‌گام از v0 تا نسخه عملیاتی</h2>
+          <p class="text-xs sm:text-sm text-slate-400">مطالعه عمیق کدها و تحلیل منطقی هر گام</p>
+        </div>
+      </div>
+
+      <!-- Step 0 Card -->
+      <div id="step-0" class="mb-12 border border-slate-800 rounded-2xl bg-slate-900/40 p-6 relative">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <span class="px-3 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 text-xs font-bold">گام اول</span>
+            <h3 class="text-lg font-bold text-white">نسخه v0.py: اتصال پایه و پرامپت‌های تک‌مرحله‌ای</h3>
+          </div>
+          <span class="badge bg-slate-800 text-slate-400 border border-slate-700">Sync • Stateless</span>
+        </div>
+        
+        <p class="text-xs sm:text-sm text-slate-300 mb-4 leading-relaxed">
+          نقطه آغازین، ایجاد یک پل ارتباطی استاندارد با مدل است. ما از کلاینت استاندارد <code class="text-indigo-300">OpenAI</code> استفاده می‌کنیم اما آدرس را به <code class="text-indigo-300">http://localhost:11434/v1</code> تغییر می‌دهیم تا با سرور لوکال Ollama یا OpenRouter همخوانی داشته باشد. در این نسخه هنوز ابزار و حافظه‌ای وجود ندارد.
+        </p>
+
+        <div class="rounded-xl overflow-hidden border border-slate-800 bg-slate-950">
+          <div class="flex items-center justify-between px-4 py-2.5 bg-slate-900 border-b border-slate-800 text-xs text-slate-400">
+            <span>کد کامل فایل v0.py</span>
+            <button onclick="copyPreCode('code-v0', this)" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors">کپی کد</button>
+          </div>
+          <pre id="code-v0" class="p-4 text-xs leading-relaxed text-slate-300 overflow-x-auto"><code>import sys
+from openai import OpenAI
+
+# رفع اختلال پرینت ایموجی‌ها در ترمینال ویندوز
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding="utf-8")
+
+client = OpenAI(
+    base_url="http://localhost:11434/v1",
+    api_key="ollama",
+)
+
+MODEL = "qwen2.5:3b"
+
+def chat(prompt: str) -> str:
+    response = client.chat.completions.create(
+        model=MODEL,
+        messages=[
+            {"role": "system", "content": "You are a helpful personal assistant."},
+            {"role": "user", "content": prompt},
+        ],
+    )
+    return response.choices[0].message.content or ""
+
+if __name__ == "__main__":
+    print("Agent V0 ready. Type 'q' to quit:\n")
+    while True:
+        user_input = input("You: ")
+        if user_input.strip().lower() in ("q", "quit"):
+            break
+        print(f"\nAssistant: {chat(user_input)}\n")</code></pre>
+        </div>
+      </div>
+
+      <!-- Step 1 Card -->
+      <div id="step-1" class="mb-12 border border-slate-800 rounded-2xl bg-slate-900/40 p-6 relative">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <span class="px-3 py-1 rounded-lg bg-indigo-500/20 text-indigo-300 text-xs font-bold">گام دوم</span>
+            <h3 class="text-lg font-bold text-white">نسخه v1.py: معرفی Tool Schemas و فراخوانی ابزار</h3>
+          </div>
+          <span class="badge bg-slate-800 text-slate-400 border border-slate-700">Tool Calling • Single Iteration</span>
+        </div>
+
+        <p class="text-xs sm:text-sm text-slate-300 mb-4 leading-relaxed">
+          در این گام، مدل به ابزارهای سیستمی مجهز می‌شود. مدل مستقیماً کد پایتون اجرا نمی‌کند، بلکه اسکیمای توابع را می‌خواند و در قالب یک آرایه از اشیای <code class="text-indigo-300">tool_calls</code> تقاضای اجرای آن را مطرح می‌کند. ما تابع پایتون را اجرا کرده و با نقش <code class="text-indigo-300">role: "tool"</code> پاسخ را به مدل برمی‌گردانیم.
+        </p>
+
+        <div class="rounded-xl overflow-hidden border border-slate-800 bg-slate-950">
+          <div class="flex items-center justify-between px-4 py-2.5 bg-slate-900 border-b border-slate-800 text-xs text-slate-400">
+            <span>کد کامل فایل v1.py</span>
+            <button onclick="copyPreCode('code-v1', this)" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors">کپی کد</button>
+          </div>
+          <pre id="code-v1" class="p-4 text-xs leading-relaxed text-slate-300 overflow-x-auto"><code>import json
+from pathlib import Path
+import sys
+from openai import OpenAI
+
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding="utf-8")
+
+client = OpenAI(base_url="http://localhost:11434/v1", api_key="ollama")
+MODEL = "qwen2.5:3b"
+WORKSPACE_DIR = Path("workspace")
+WORKSPACE_DIR.mkdir(exist_ok=True)
+
+# ۱. تعریف ابزارهای پایتونی
+def list_files():
+    return [f.name for f in WORKSPACE_DIR.iterdir() if f.is_file()]
+
+def read_file(file_name: str):
+    file_path = WORKSPACE_DIR / file_name
+    if not file_path.exists():
+        return f"Error: File '{file_name}' not found."
+    return file_path.read_text(encoding="utf-8")
+
+tools = {"list_files": list_files, "read_file": read_file}
+
+# ۲. تعریف کاتالوگ اسکیمای ابزارها برای مدل
+tool_schemas = [
+    {
+        "type": "function",
+        "function": {
+            "name": "list_files",
+            "description": "List all files in workspace directory.",
+            "parameters": {"type": "object", "properties": {}},
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "read_file",
+            "description": "Read content of a specific file.",
+            "parameters": {
+                "type": "object",
+                "properties": {"file_name": {"type": "string"}},
+                "required": ["file_name"],
+            },
+        },
+    },
+]
+
+# ۳. مدیریت درخواست اجرای ابزار (تک مرحله‌ای)
+def chat(prompt: str) -> str:
+    messages = [
+        {"role": "system", "content": "You are a helpful personal assistant."},
+        {"role": "user", "content": prompt},
+    ]
+
+    response = client.chat.completions.create(
+        model=MODEL,
+        messages=messages,
+        tools=tool_schemas,
+    )
+    message = response.choices[0].message
+
+    if not message.tool_calls:
+        return message.content or ""
+
+    messages.append(message)
+
+    for call in message.tool_calls:
+        args = json.loads(call.function.arguments)
+        name = call.function.name
+        result = tools[name](**args) if name in tools else "Unknown tool"
+
+        messages.append({
+            "role": "tool",
+            "tool_call_id": call.id,
+            "content": str(result),
+        })
+
+    final = client.chat.completions.create(model=MODEL, messages=messages)
+    return final.choices[0].message.content or ""</code></pre>
+        </div>
+      </div>
+
+      <!-- Step 2 Card -->
+      <div id="step-2" class="mb-12 border border-slate-800 rounded-2xl bg-slate-900/40 p-6 relative">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <span class="px-3 py-1 rounded-lg bg-amber-500/20 text-amber-300 text-xs font-bold">گام سوم</span>
+            <h3 class="text-lg font-bold text-white">نسخه v2.py: ساخت حلقه عاملی خودکار (The Agentic Loop)</h3>
+          </div>
+          <span class="badge bg-slate-800 text-slate-400 border border-slate-700">Autonomous • Multi-step</span>
+        </div>
+
+        <p class="text-xs sm:text-sm text-slate-300 mb-4 leading-relaxed">
+          مشکل نسخه قبلی این بود که تنها یک دور ابزار صدا می‌زد. در دنیای واقعی، ایجنت باید بتواند ابتدا فایل‌ها را لیست کند، سپس یکی را بخواند و بعد خروجی را در فایلی دیگر ذخیره کند. این قابلیت با حلقه پیوسته <code class="text-amber-300">while True</code> و بررسی شرط خروج ایجاد می‌شود.
+        </p>
+
+        <div class="rounded-xl overflow-hidden border border-slate-800 bg-slate-950">
+          <div class="flex items-center justify-between px-4 py-2.5 bg-slate-900 border-b border-slate-800 text-xs text-slate-400">
+            <span>کد بخش حلقه خودکار در v2.py</span>
+            <button onclick="copyPreCode('code-v2', this)" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors">کپی کد</button>
+          </div>
+          <pre id="code-v2" class="p-4 text-xs leading-relaxed text-slate-300 overflow-x-auto"><code>def chat(prompt: str) -> str:
+    messages = [
+        {"role": "system", "content": "You are a helpful personal assistant."},
+        {"role": "user", "content": prompt},
+    ]
+
+    # چرخه عاملی پیوسته (Agentic Loop)
+    while True:
+        response = client.chat.completions.create(
+            model=MODEL,
+            messages=messages,
+            tools=tool_schemas,
+        )
+        message = response.choices[0].message
+
+        # شرط توقف: مدل تصمیم گرفته نیازی به ابزار ندارد و پاسخ نهایی را تولید کرده است
+        if not message.tool_calls:
+            return message.content or ""
+
+        # ثبت پیام مدل برای حفظ کانتکست
+        messages.append(message)
+
+        # اجرای تمامی ابزارهای درخواست شده در این مرحله
+        for call in message.tool_calls:
+            args = json.loads(call.function.arguments)
+            name = call.function.name
+            print(f"[Loop Action] Calling {name} with {args}")
+            
+            result = tools[name](**args) if name in tools else "Tool not found"
+            
+            # بازگرداندن نتیجه به کانتکست
+            messages.append({
+                "role": "tool",
+                "tool_call_id": call.id,
+                "content": str(result),
+            })
+        # حلقه ادامه می‌یابد تا مدل نتیجه ابزار را مشاهده و اقدام بعدی را تعیین کند</code></pre>
+        </div>
+      </div>
+
+      <!-- Step 3 Card -->
+      <div id="step-3" class="mb-12 border border-slate-800 rounded-2xl bg-slate-900/40 p-6 relative">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <span class="px-3 py-1 rounded-lg bg-cyan-500/20 text-cyan-300 text-xs font-bold">گام چهارم</span>
+            <h3 class="text-lg font-bold text-white">نسخه v3.py: استانداردسازی ابزارها با پروتکل MCP و Async</h3>
+          </div>
+          <span class="badge bg-slate-800 text-slate-400 border border-slate-700">MCP Protocol • Asyncio</span>
+        </div>
+
+        <p class="text-xs sm:text-sm text-slate-300 mb-4 leading-relaxed">
+          هاردکد کردن ابزارها در فایل اسکریپت مقیاس‌پذیر نیست. با اتصال به سرورهای استاندارد پروتکل <strong>Model Context Protocol (MCP)</strong> از طریق کانال <code class="text-cyan-300">stdio</code>، ابزارهای شبکه و وب به صورت ناهمگام (Async) فراخوانی شده و با دستور <code class="text-cyan-300">session.list_tools()</code> به صورت داینامیک کشف می‌شوند.
+        </p>
+
+        <div class="rounded-xl overflow-hidden border border-slate-800 bg-slate-950">
+          <div class="flex items-center justify-between px-4 py-2.5 bg-slate-900 border-b border-slate-800 text-xs text-slate-400">
+            <span>قطعه کد کلیدی اتصال به MCP در v3.py</span>
+            <button onclick="copyPreCode('code-v3', this)" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors">کپی کد</button>
+          </div>
+          <pre id="code-v3" class="p-4 text-xs leading-relaxed text-slate-300 overflow-x-auto"><code>from contextlib import AsyncExitStack
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+from openai import AsyncOpenAI
+
+client = AsyncOpenAI(base_url="http://localhost:11434/v1", api_key="ollama")
+exit_stack = AsyncExitStack()
+mcp_sessions = {}
+all_tool_schemas = list(local_tool_schemas)
+
+async def connect_to_mcp_servers():
+    """کشف خودکار و ثبت داینامیک ابزارهای سرورهای MCP"""
+    for name, params in MCP_SERVERS.items():
+        read_stream, write_stream = await exit_stack.enter_async_context(
+            stdio_client(params)
+        )
+        session = await exit_stack.enter_async_context(
+            ClientSession(read_stream, write_stream)
+        )
+        await session.initialize()
+        
+        # کشف ابزارها بدون نیاز به نوشتن دستی Schema
+        tools_result = await session.list_tools()
+        for tool in tools_result.tools:
+            mcp_sessions[tool.name] = session
+            all_tool_schemas.append({
+                "type": "function",
+                "function": {
+                    "name": tool.name,
+                    "description": tool.description or "",
+                    "parameters": tool.inputSchema,
+                },
+            })</code></pre>
+        </div>
+      </div>
+
+      <!-- Step 4 Card -->
+      <div id="step-4" class="mb-12 border border-slate-800 rounded-2xl bg-slate-900/40 p-6 relative">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <span class="px-3 py-1 rounded-lg bg-pink-500/20 text-pink-300 text-xs font-bold">گام پنجم</span>
+            <h3 class="text-lg font-bold text-white">نسخه v4.py: حافظه پایدار و ماندگار (Persistent Memory)</h3>
+          </div>
+          <span class="badge bg-slate-800 text-slate-400 border border-slate-700">Active Write • Passive Read</span>
+        </div>
+
+        <p class="text-xs sm:text-sm text-slate-300 mb-4 leading-relaxed">
+          برای اینکه ایجنت بین سشن‌های مختلف نام، سن یا ترجیحات کاربر را به یاد داشته باشد، از دو سازوکار همزمان استفاده می‌شود:
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
+            <div class="font-bold text-pink-400 text-xs mb-1">خوانش غیرفعال (Passive Read)</div>
+            <p class="text-xs text-slate-400">فایل <code class="text-slate-200">memory.md</code> در ابتدای اجرای هر تسک خوانده شده و به درون <code class="text-slate-200">System Prompt</code> تزریق می‌شود.</p>
+          </div>
+          <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
+            <div class="font-bold text-pink-400 text-xs mb-1">نوشتن فعال (Active Write)</div>
+            <p class="text-xs text-slate-400">ابزاری به نام <code class="text-slate-200">save_memory</code> در اختیار ایجنت است تا هر زمان کاربر نکته مهمی گفت، خودش مستقیماً فایل دیسک را آپدیت کند.</p>
+          </div>
+        </div>
+
+        <div class="rounded-xl overflow-hidden border border-slate-800 bg-slate-950">
+          <div class="flex items-center justify-between px-4 py-2.5 bg-slate-900 border-b border-slate-800 text-xs text-slate-400">
+            <span>تزریق حافظه به پرامپت در v4.py</span>
+            <button onclick="copyPreCode('code-v4', this)" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors">کپی کد</button>
+          </div>
+          <pre id="code-v4" class="p-4 text-xs leading-relaxed text-slate-300 overflow-x-auto"><code>MEMORY_FILE = Path("memory.md")
+
+def load_memory() -> str:
+    return MEMORY_FILE.read_text(encoding="utf-8") if MEMORY_FILE.exists() else ""
+
+def save_memory(content: str) -> str:
+    MEMORY_FILE.write_text(content, encoding="utf-8")
+    return "Memory updated successfully."
+
+def chat(prompt: str) -> str:
+    # تزریق خودکار محتوای حافظه پایدار به پرامپت سیستمی
+    memory_content = load_memory()
+    system_prompt = (
+        "You are a helpful personal assistant.\n\n"
+        f"Persistent Memory:\n{memory_content if memory_content else 'No memory saved yet.'}"
+    )
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": prompt},
+    ]
+    # ادامه حلقه عاملی همانند نسخه ۲...</code></pre>
+        </div>
+      </div>
+
+      <!-- Step 5: Full Harness -->
+      <div id="code-repository" class="border-2 border-indigo-500/30 rounded-2xl bg-slate-900/60 p-6 relative">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+          <div>
+            <span class="px-3 py-1 rounded-lg bg-indigo-500/20 text-indigo-300 text-xs font-bold">شاهکار نهایی</span>
+            <h3 class="text-xl font-black text-white mt-1">نسخه جامع harness.py: سیستم کنترل چندمدلی و خط فرمان</h3>
+          </div>
+          <div class="flex gap-2">
+            <span class="badge bg-indigo-900/50 text-indigo-300 border border-indigo-700/60">Slash Commands</span>
+            <span class="badge bg-cyan-900/50 text-cyan-300 border border-cyan-700/60">mcp_servers.json</span>
+          </div>
+        </div>
+
+        <p class="text-xs sm:text-sm text-slate-300 mb-6 leading-relaxed">
+          این اسکریپت تجمیع کامل تمام ماژول‌هاست: پیکربندی سرورهای MCP از فایل خارجی خوانده می‌شود، کاربر می‌تواند در لحظه با دستوراتی چون <code class="text-amber-300">/models</code> و <code class="text-amber-300">/model local_small</code> مدل هوش مصنوعی را عوض کند، با <code class="text-amber-300">/tools</code> لیست ابزارهای فعال را ببیند و با <code class="text-amber-300">/memory</code> حافظه ذخیره شده را مرور نماید.
+        </p>
+
+        <!-- Tabbed View for Final Production Files -->
+        <div class="space-y-4">
+          <!-- File 1: mcp_servers.json -->
+          <div class="rounded-xl overflow-hidden border border-slate-800 bg-slate-950">
+            <div class="flex items-center justify-between px-4 py-2.5 bg-slate-900 border-b border-slate-800 text-xs">
+              <span class="font-mono text-cyan-400">📄 mcp_servers.json</span>
+              <button onclick="copyPreCode('code-mcp-json', this)" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors">کپی JSON</button>
+            </div>
+            <pre id="code-mcp-json" class="p-4 text-xs leading-relaxed text-slate-300 overflow-x-auto"><code>{
+  "mcpServers": {
+    "time": {
+      "command": "uvx",
+      "args": ["mcp-server-time"]
+    },
+    "fetch": {
+      "command": "uvx",
+      "args": ["mcp-server-fetch"]
+    }
+  }
+}</code></pre>
+          </div>
+
+          <!-- File 2: harness.py -->
+          <div class="rounded-xl overflow-hidden border border-slate-800 bg-slate-950">
+            <div class="flex items-center justify-between px-4 py-2.5 bg-slate-900 border-b border-slate-800 text-xs">
+              <span class="font-mono text-indigo-400">🐍 harness.py (اسکریپت نهایی)</span>
+              <button onclick="copyPreCode('code-harness-full', this)" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors">کپی کد کامل</button>
+            </div>
+            <pre id="code-harness-full" class="p-4 text-xs leading-relaxed text-slate-300 overflow-x-auto max-h-[500px]"><code>import asyncio
+from contextlib import AsyncExitStack
+import json
+import os
+from pathlib import Path
+import sys
+
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+from openai import AsyncOpenAI
+
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding="utf-8")
+
+ROOT_DIR = Path(__file__).parent if "__file__" in locals() else Path.cwd()
+WORKSPACE_DIR = ROOT_DIR / "workspace"
+MEMORY_FILE = ROOT_DIR / "memory.md"
+MCP_CONFIG_FILE = ROOT_DIR / "mcp_servers.json"
+
+WORKSPACE_DIR.mkdir(exist_ok=True)
+
+MODEL_CONFIGS = {
+    "local": {"model": "qwen2.5:3b", "base_url": "http://localhost:11434/v1", "api_key": "ollama"},
+    "local_small": {"model": "qwen2.5:1.5b", "base_url": "http://localhost:11434/v1", "api_key": "ollama"},
+    "openrouter": {"model": "anthropic/claude-3.5-sonnet", "base_url": "https://openrouter.ai/api/v1", "api_key": os.getenv("OPENROUTER_API_KEY", "")},
+}
+
+current_model_key = "local"
+
+def get_client(model_key: str):
+    conf = MODEL_CONFIGS[model_key]
+    return AsyncOpenAI(base_url=conf.get("base_url"), api_key=conf.get("api_key") or "dummy"), conf["model"]
+
+def load_memory() -> str:
+    return MEMORY_FILE.read_text(encoding="utf-8") if MEMORY_FILE.exists() else ""
+
+def save_memory(content: str) -> str:
+    MEMORY_FILE.write_text(content, encoding="utf-8")
+    return "Memory successfully updated."
+
+def list_files():
+    return [f.name for f in WORKSPACE_DIR.iterdir() if f.is_file()]
+
+def read_file(file_name: str):
+    p = WORKSPACE_DIR / file_name
+    return p.read_text(encoding="utf-8") if p.exists() else f"File {file_name} not found"
+
+def write_file(file_name: str, content: str):
+    (WORKSPACE_DIR / file_name).write_text(content, encoding="utf-8")
+    return f"File '{file_name}' saved."
+
+local_tools = {"list_files": list_files, "read_file": read_file, "write_file": write_file, "save_memory": save_memory}
+
+local_tool_schemas = [
+    {"type": "function", "function": {"name": "list_files", "description": "List files", "parameters": {"type": "object", "properties": {}}}},
+    {"type": "function", "function": {"name": "read_file", "description": "Read file", "parameters": {"type": "object", "properties": {"file_name": {"type": "string"}}, "required": ["file_name"]}}},
+    {"type": "function", "function": {"name": "write_file", "description": "Write file", "parameters": {"type": "object", "properties": {"file_name": {"type": "string"}, "content": {"type": "string"}}, "required": ["file_name", "content"]}}},
+    {"type": "function", "function": {"name": "save_memory", "description": "Save to memory", "parameters": {"type": "object", "properties": {"content": {"type": "string"}}, "required": ["content"]}}},
+]
+
+mcp_sessions = {}
+all_tool_schemas = list(local_tool_schemas)
+exit_stack = AsyncExitStack()
+
+async def connect_mcp_servers():
+    if not MCP_CONFIG_FILE.exists():
+        return
+    with open(MCP_CONFIG_FILE, "r", encoding="utf-8") as f:
+        servers = json.load(f).get("mcpServers", {})
+
+    for name, s_info in servers.items():
+        params = StdioServerParameters(command=s_info["command"], args=s_info.get("args", []))
+        r, w = await exit_stack.enter_async_context(stdio_client(params))
+        session = await exit_stack.enter_async_context(ClientSession(r, w))
+        await session.initialize()
+        res = await session.list_tools()
+        for t in res.tools:
+            mcp_sessions[t.name] = session
+            all_tool_schemas.append({"type": "function", "function": {"name": t.name, "description": t.description or "", "parameters": t.inputSchema}})
+
+async def call_tool(name: str, args: dict):
+    if name in local_tools:
+        return local_tools[name](**args)
+    if name in mcp_sessions:
+        r = await mcp_sessions[name].call_tool(name, arguments=args)
+        texts = [i.text for i in r.content if getattr(i, "type", "") == "text"]
+        return "\n".join(texts) if texts else str(r.content)
+    return f"Error: Tool {name} not found"
+
+async def run_agent(prompt: str) -> str:
+    client, model = get_client(current_model_key)
+    system_prompt = f"You are a helpful assistant.\n\nMemory:\n{load_memory()}"
+    messages = [{"role": "system", "content": system_prompt}, {"role": "user", "content": prompt}]
+
+    while True:
+        resp = await client.chat.completions.create(model=model, messages=messages, tools=all_tool_schemas)
+        msg = resp.choices[0].message
+        if not msg.tool_calls:
+            return msg.content or ""
+        messages.append(msg)
+        for call in msg.tool_calls:
+            args = json.loads(call.function.arguments)
+            result = await call_tool(call.function.name, args)
+            messages.append({"role": "tool", "tool_call_id": call.id, "content": str(result)})
+
+def handle_slash_command(cmd: str) -> bool:
+    global current_model_key
+    parts = cmd.strip().split()
+    b = parts[0].lower()
+    if b in ("/q", "/quit"): return False
+    if b == "/models":
+        print("\n".join([f" - {k}: {v['model']}{' (Active)' if k == current_model_key else ''}" for k, v in MODEL_CONFIGS.items()]))
+    elif b == "/model" and len(parts) > 1 and parts[1] in MODEL_CONFIGS:
+        current_model_key = parts[1]
+        print(f"Model switched to {current_model_key}")
+    elif b == "/tools":
+        print("\n".join([f" - {s['function']['name']}" for s in all_tool_schemas]))
+    elif b == "/memory":
+        print(load_memory() or "(Empty)")
+    return True
+
+async def main():
+    try:
+        await connect_mcp_servers()
+        print("Harness ready. Commands: /models, /model <name>, /tools, /memory, /quit")
+        while True:
+            u = await asyncio.to_thread(input, f"[{current_model_key}] You: ")
+            if not u.strip(): continue
+            if u.startswith("/"):
+                if not handle_slash_command(u): break
+                continue
+            print(f"\nAssistant:\n{await run_agent(u)}\n")
+    finally:
+        await exit_stack.aclose()
+
+if __name__ == "__main__":
+    asyncio.run(main())</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparison Matrix Section -->
+    <section id="comparison" class="mb-16">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-2.5 h-8 bg-amber-500 rounded-full"></div>
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">۴. مقایسه سیر تکامل نسخه‌ها در یک نگاه</h2>
+          <p class="text-xs sm:text-sm text-slate-400">جدول ماتریس ویژگی‌ها و ظرفیت‌های پیاده‌سازی شده</p>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900/60">
+        <table class="w-full text-right text-xs sm:text-sm">
+          <thead class="bg-slate-900 border-b border-slate-800 text-slate-400 font-medium">
+            <tr>
+              <th class="p-4">نسخه</th>
+              <th class="p-4">مدل اجرایی</th>
+              <th class="p-4">حلقه تصمیم‌گیری</th>
+              <th class="p-4">پشتیبانی ابزارها</th>
+              <th class="p-4">وضعیت حافظه</th>
+              <th class="p-4">قابلیت کلیدی</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/60 text-slate-300">
+            <tr class="hover:bg-slate-800/30 transition-colors">
+              <td class="p-4 font-bold text-emerald-400">v0.py</td>
+              <td class="p-4">همگام (Sync)</td>
+              <td class="p-4 text-slate-500">ندارد</td>
+              <td class="p-4 text-slate-500">فاقد ابزار</td>
+              <td class="p-4 text-slate-500">فراموشی کامل</td>
+              <td class="p-4">برقراری ارتباط و تست پرامپت‌ها</td>
+            </tr>
+            <tr class="hover:bg-slate-800/30 transition-colors">
+              <td class="p-4 font-bold text-indigo-400">v1.py</td>
+              <td class="p-4">همگام (Sync)</td>
+              <td class="p-4 text-slate-500">تک‌مرحله‌ای</td>
+              <td class="p-4">ابزارهای فایل محلی</td>
+              <td class="p-4 text-slate-500">محدود به سشن</td>
+              <td class="p-4">تولید ساختار JSON Schema</td>
+            </tr>
+            <tr class="hover:bg-slate-800/30 transition-colors">
+              <td class="p-4 font-bold text-amber-400">v2.py</td>
+              <td class="p-4">همگام (Sync)</td>
+              <td class="p-4 text-emerald-400 font-bold">while True پیوسته</td>
+              <td class="p-4">خواندن و نوشتن فایل</td>
+              <td class="p-4 text-slate-500">محدود به سشن</td>
+              <td class="p-4">استدلال چندمرحله‌ای خودکار</td>
+            </tr>
+            <tr class="hover:bg-slate-800/30 transition-colors">
+              <td class="p-4 font-bold text-cyan-400">v3.py</td>
+              <td class="p-4 text-cyan-300">ناهمگام (Asyncio)</td>
+              <td class="p-4 text-emerald-400 font-bold">while True ناهمگام</td>
+              <td class="p-4 text-cyan-300 font-bold">پروتکل MCP و وب</td>
+              <td class="p-4 text-slate-500">محدود به سشن</td>
+              <td class="p-4">کشف داینامیک ابزارها (Discovery)</td>
+            </tr>
+            <tr class="hover:bg-slate-800/30 transition-colors">
+              <td class="p-4 font-bold text-pink-400">v4.py</td>
+              <td class="p-4">همگام/ناهمگام</td>
+              <td class="p-4 text-emerald-400 font-bold">while True پیوسته</td>
+              <td class="p-4">فایل + ابزار حافظه</td>
+              <td class="p-4 text-pink-300 font-bold">پایدار در memory.md</td>
+              <td class="p-4">ماندگاری داده‌ها بین نشست‌ها</td>
+            </tr>
+            <tr class="bg-indigo-950/20 hover:bg-indigo-950/40 transition-colors">
+              <td class="p-4 font-black text-indigo-300">Harness</td>
+              <td class="p-4 text-cyan-300 font-bold">مسیریابی ماژولار</td>
+              <td class="p-4 text-emerald-400 font-bold">حلقه کامل ایجنتی</td>
+              <td class="p-4 text-cyan-300 font-bold">ترکیبی (MCP + Local)</td>
+              <td class="p-4 text-pink-300 font-bold">پایدار و هوشمند</td>
+              <td class="p-4 text-amber-300 font-bold">کماندهای ترمینال و سوییچ مدل</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Best Practices & Enterprise Guardrails -->
+    <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-2.5 h-8 bg-rose-500 rounded-full"></div>
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">۵. نکات طلایی برای محیط عملیاتی (Production Guardrails)</h2>
+          <p class="text-xs sm:text-sm text-slate-400">اصولی که مانع از آسیب به زیرساخت یا نشت هزینه می‌شوند</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800">
+          <div class="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center font-bold mb-3">!</div>
+          <h4 class="font-bold text-slate-200 text-sm mb-2">تعیین سقف تکرار (Max Iterations)</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            در حلقه <code class="text-rose-300">while True</code> همیشه متغیر <code class="text-slate-200">step_count &lt; 15</code> را کنترل کنید تا اگر مدل دچار توهم یا لوپ باطل شد، توکن‌ها و بودجه پروژه هدر نرود.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800">
+          <div class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold mb-3">🛡️</div>
+          <h4 class="font-bold text-slate-200 text-sm mb-2">تایید انسانی (Human-in-the-Loop)</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            برای ابزارهای پرریسک نظیر حذف فایل، تغییر دیتابیس یا اجرای شل، حتماً قبل از اجرای اکشن در پایتون یک ورودی تأییدیه صریح از کاربر دریافت نمایید.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold mb-3">🧹</div>
+          <h4 class="font-bold text-slate-200 text-sm mb-2">هرس و تلخیص کانتکست (Context Pruning)</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            اگر تسک شامل ۲۰ دور فراخوانی ابزار است، تاریخچه پیام‌ها سرریز خواهد شد؛ نتایج طولانی ابزارها را پس از خوانده شدن توسط مدل خلاصه و فشرده کنید.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-slate-800/80 bg-slate-950 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <p>جزوه آموزشی Agentic Harness • تدوین شده بر پایه پایتون استاندارد</p>
+      <div class="flex items-center gap-4">
+        <span>پروپوزال کارگاه تخصصی هوش مصنوعی</span>
+        <span>•</span>
+        <span>سازگار با Ollama و OpenRouter</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="fixed bottom-6 left-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none bg-slate-800 text-slate-100 border border-slate-700 px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2 text-xs">
+    <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+    </svg>
+    <span id="toast-message">کد با موفقیت کپی شد!</span>
+  </div>
+
+  <!-- Interactive JavaScript -->
+  <script>
+    // Copy helper for generic text
+    function copyToClipboard(text, btnElement) {
+      if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand('copy');
+          showToast('دستور در کلیپ‌بورد کپی شد!');
+          flashButton(btnElement);
+        } catch (err) {
+          console.error('Failed to copy', err);
+        }
+        document.body.removeChild(textarea);
+      }
+    }
+
+    // Copy helper specifically for preformatted code blocks
+    function copyPreCode(elementId, btnElement) {
+      const codeElement = document.getElementById(elementId);
+      if (!codeElement) return;
+      
+      const textToCopy = codeElement.innerText || codeElement.textContent;
+      
+      const textarea = document.createElement('textarea');
+      textarea.value = textToCopy;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      
+      try {
+        document.execCommand('copy');
+        showToast('کد کامل کپی شد!');
+        flashButton(btnElement);
+      } catch (e) {
+        console.error('Copy failed', e);
+      }
+      document.body.removeChild(textarea);
+    }
+
+    // Visual button feedback
+    function flashButton(btn) {
+      if (!btn) return;
+      const originalText = btn.innerText;
+      btn.innerText = 'کپی شد ✓';
+      btn.classList.add('bg-emerald-600', 'text-white');
+      setTimeout(() => {
+        btn.innerText = originalText;
+        btn.classList.remove('bg-emerald-600', 'text-white');
+      }, 2000);
+    }
+
+    // Modern floating toast alert
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-message');
+      toastMsg.innerText = message;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 2500);
+    }
+
+    // Smooth scroll for top drawer toggle
+    document.getElementById('toggle-toc')?.addEventListener('click', () => {
+      const roadmap = document.getElementById('roadmap');
+      if (roadmap) {
+        roadmap.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  </script>
+</body>
+</html>
